@@ -1,0 +1,42 @@
+# Deployment - conversao temperatura
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: conversao
+spec:
+  replicas: 4
+  selector:
+    matchLabels: 
+      app: conversao
+  template:
+    metadata:
+      labels:
+        app: conversao
+    spec:
+      containers:
+      - name: web
+        image: fabricioveronez/conversao-temperatura:v1
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+
+---
+
+# Service - conversao temperatura
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: conversao
+spec:
+  selector:
+    app: conversao
+  ports:
+    - port: 80
+      targetPort: 8080
+      nodePort: 30000
+  type: NodePort
